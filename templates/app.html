@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <title>SITE SAMPLE</title>
+    <script src="https://kit.fontawesome.com/872c04da44.js" crossorigin="anonymous"></script>
+    <style>
+        .ja i, .en i, .popup-box {
+            /* 表示、非表示切り替え用 */
+            display: none;
+        }
+
+        :root {
+            /* 変数一覧 */
+            --header-color: #00a4b3;
+            --header-icon-color: #00434a;
+            --base-color: #ebebeb;
+            --word-box-back-color: #ffffff;
+            --en-word-color: #ff7700;
+
+            /* 変数一覧
+            --header-color: #00a4b3;
+            --header-icon-color: #00434a;
+            --base-color: #ebebeb;
+            --word-box-back-color: #ffffff;
+            --en-word-color: #ed6f00; */
+
+            --header-fontsize: 1.2rem;
+            --header-height: 3.5rem;
+            --all-radius: 5px;
+            --changebox-line-thickness: 1.5px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-weight: normal;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: var(--base-color);
+        }
+
+        /* inline */
+        select {
+            margin: 0;
+            padding: 0;
+            box-sizing: content-box;
+            border: none;
+            appearance: none;
+        }
+
+        /* inline */
+        button {
+            /* 背景を透明化 */
+            background-color: transparent;
+            display: block;
+        }
+
+        /* inline */
+        i {
+            display: block;
+        }
+
+        /* block !!!!!!!!!!! */
+        p {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* inline */
+        label {
+            display: block;
+        }
+
+
+        .pull-down select, .changer-box, .word-box, .check-button, .popup-box {
+            border-radius: var(--all-radius);
+        }
+        
+        .header {
+            background-color: var(--header-color);
+            position: fixed;
+            top: 0;
+            left: 0;
+            /* borderとpaddingを含めて幅を100%にする */
+            box-sizing: border-box;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: var(--header-fontsize);
+            padding: 0.5rem 4vw;
+            height: var(--header-height);
+        }
+
+        .pull-down {
+            /* 背景色を透明にする */
+            /* background-color: transparent; */
+            /* 親要素から継承 */
+            /* font-size: inherit; */
+            /* 子要素のposition absolute を有効化するために必要 */
+            position: relative;
+            width: 8.8rem;
+        }
+
+        .pull-down select {
+            color: var(--header-icon-color);
+            background-color: transparent;
+            font-size: 1.4rem;
+            padding: 2% 0;
+            padding-right: 0;
+            width: 100%;
+        }
+
+        .pull-down .down-arrow {
+            color: #007885;
+            font-size: 1.1rem;
+            position: absolute;
+            top: 0.6rem;
+            right: 0;
+            /* クリックの邪魔にならないように設定 */
+            pointer-events: none;
+        }
+
+        .tool-space {
+            color: var(--header-icon-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            /* widthやheightで明示的にサイズを指定すると、子要素はそのサイズを超えなくなる */
+            width: 11.4rem;
+        }
+
+        .changer-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 5.5rem;
+            font-size: 1.6rem;
+            padding: 0.3rem;
+            border: var(--changebox-line-thickness) solid var(--header-icon-color);
+        }
+
+        .ja, .en {
+            box-sizing: border-box;
+            width: 50%;
+            text-align: center;
+            position: relative;
+        }
+
+        .ja {
+            border-right: var(--changebox-line-thickness) solid var(--header-icon-color);
+        }
+
+        .ja i, .en i {
+            position: absolute;
+            /* absoluteの中央寄せ */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            -webkit-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+        }
+
+        .popup-box {
+            border: 1px solid rgb(201, 201, 201);
+            position: absolute;
+            top: 0;
+            right: 5rem;
+            top: var(--header-height);
+            width: 200px;
+            background-color: white;
+            text-align: center;
+            margin-top: 3px;
+            padding: 1.5rem 0;
+        }
+
+        .popup-box p {
+            font-size: 1.1rem;
+            width: 12rem;
+            margin: 0 auto;
+        }
+
+        .popup-box .popup-text {
+            font-size: 1.0rem;
+            margin: 0 auto;
+            margin-top: 1rem;
+            width: 8rem;
+            text-align: left;
+            position: relative;
+        }
+
+        .popup-box input {
+            margin-left: 1rem;
+            width: 1.3rem;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        .words-list {
+            margin-top: calc(var(--header-height) + 1rem);
+        }
+
+        .word-box {
+            /* border: 1px solid gray; */
+            background-color: var(--word-box-back-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 60vw;
+            /* スマホ用 */
+            min-width: 320px;
+            margin: 0.8rem auto;
+            padding: 1rem 0;
+        }
+
+        .word-box i {
+            width: 15%;
+            text-align: center;
+        }
+
+        .category-check {
+            width: 15%;
+        }
+
+        .check-button {
+            --side-length: 1.6rem;
+            width: var(--side-length);
+            height: var(--side-length);
+            border: 2px solid gray;
+            margin: 0 auto;
+        }
+
+        .en-word {
+            width: 30%;
+            text-align: left;
+            color: var(--en-word-color);
+        }
+
+        .ja-word {
+            width: 40%;
+            /* テキストの両端揃え */
+            text-align: justify;
+        }
+
+        @media screen and (min-width: 960px) {
+            .tool-space {
+                width: 14rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="pull-down">
+            <select name="prefecture" id="section-pulldown">
+                <option value="ALL">ALL Section</option>
+                <option value="1">Section 1</option>
+                <option value="2">Section 2</option>
+                <option value="3">Section 3</option>
+                <option value="4">Section 4</option>
+                <option value="5">Section 5</option>
+                <option value="6">Section 6</option>
+                <option value="7">Section 7</option>
+                <option value="8">Section 8</option>
+                <option value="9">Section 9</option>
+                <option value="10">Section 10</option>
+                <option value="11">Section 11</option>
+                <option value="12">Section 12</option>
+                <option value="13">Section 13</option>
+                <option value="14">Section 14</option>
+                <option value="15">Section 15</option>
+                <option value="16">Section 16</option>
+                <option value="17">Section 17</option>
+                <option value="18">Section 18</option>
+                <option value="19">Section 19</option>
+            </select>
+            <i class="down-arrow fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="tool-space">
+            <i class="fa-solid fa-filter fa-lg"></i>
+            <i class="fa-solid fa-shuffle fa-lg"></i>
+            <div class="changer-box">
+                <div class="ja">
+                    ja
+                    <i class="fa-solid fa-slash"></i>
+                </div>
+                <div class="en">
+                    en
+                    <i class="fa-solid fa-slash"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="popup-box">
+            <p>表示するカテゴリー</p>
+            <label class="popup-text">マークなし<input type="checkbox" name="" id=""></label>
+            <label class="popup-text">赤マーク<input type="checkbox" name="" id=""></label>
+            <label class="popup-text">黄マーク<input type="checkbox" name="" id=""></label>
+        </div>
+    </header>
+
+    <div class="words-list">
+        <div class="word-box">
+            <div class="category-check">
+                <button class="check-button"></button>
+            </div>
+            <div class="en-word">improve</div>
+            <div class="ja-word">を向上させる；よくなる</div>
+            <i class="fa-solid fa-volume-high"></i>
+        </div>
+        <div class="word-box">
+            <div class="category-check">
+                <button class="check-button"></button>
+            </div>
+            <div class="en-word">relate</div>
+            <div class="ja-word">を（...と）関連づける；（...に）関連する</div>
+            <i class="fa-solid fa-volume-high"></i>
+        </div>
+        <div class="word-box">
+            <div class="category-check">
+                <button class="check-button"></button>
+            </div>
+            <div class="en-word">provide</div>
+            <div class="ja-word">を供給する（≒supply）</div>
+            <i class="fa-solid fa-volume-high"></i>
+        </div>
+        <div class="word-box">
+            <div class="category-check">
+                <button class="check-button"></button>
+            </div>
+            <div class="en-word">consider</div>
+            <div class="ja-word">を見なす；について考える</div>
+            <i class="fa-solid fa-volume-high"></i>
+        </div>
+        <div class="word-box">
+            <div class="category-check">
+                <button class="check-button"></button>
+            </div>
+            <div class="en-word">include</div>
+            <div class="ja-word">を含む</div>
+            <i class="fa-solid fa-volume-high"></i>
+        </div>
+        <div class="word-box">
+            <div class="category-check">
+                <button class="check-button"></button>
+            </div>
+            <div class="en-word">concern</div>
+            <div class="ja-word">（受身形で）（...を）心配する；（...に）関係する；に関連する</div>
+            <i class="fa-solid fa-volume-high"></i>
+        </div>
+        <div class="word-box">
+            <div class="category-check">
+                <button class="check-button"></button>
+            </div>
+            <div class="en-word">involve</div>
+            <div class="ja-word">を関与させる；を伴う</div>
+            <i class="fa-solid fa-volume-high"></i>
+        </div>
+        <div class="word-box">
+            <div class="category-check">
+                <button class="check-button"></button>
+            </div>
+            <div class="en-word">produce</div>
+            <div class="ja-word">を生産する；を取り出す</div>
+            <i class="fa-solid fa-volume-high"></i>
+        </div>
+        <div class="word-box">
+            <div class="category-check">
+                <button class="check-button"></button>
+            </div>
+            <div class="en-word">allow</div>
+            <div class="ja-word">を許す；を与える；（...を）考慮に入れる</div>
+            <i class="fa-solid fa-volume-high"></i>
+        </div>
+        <div class="word-box">
+            <div class="category-check">
+                <button class="check-button"></button>
+            </div>
+            <div class="en-word">require</div>
+            <div class="ja-word">を要求する；を必要とする</div>
+            <i class="fa-solid fa-volume-high"></i>
+        </div>
+    </div>
+    
+</body>
+</html>
