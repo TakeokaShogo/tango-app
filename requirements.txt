@@ -1,0 +1,4 @@
+flask
+flask_sqlalchemy
+# AQLAlchemyからpostgreSQLを利用するのに必要
+psycopg2
