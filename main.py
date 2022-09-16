@@ -1,7 +1,8 @@
-from flask import Flask, render_template
+from flask import *
 from flask_sqlalchemy import SQLAlchemy
 import os
 import csv
+import re
               
 app = Flask(__name__)
 # アップデートの追跡機能の無効化
@@ -47,6 +48,21 @@ def insert_word_list():
 @app.route('/', methods=["GET"])
 def render_app():
     return render_template("app.html")
+
+# fetch API
+@app.route("/word_list", methods=["GET"])
+def get_word_list():
+    all_record = WordList.query.all()
+    top_data = []
+    for record in all_record:
+        top_data.append({
+            "id":record.id,
+            "category":record.category,
+            "enWord":record.en_word,
+            # 意味を分割して配列に変換
+            "jaMeaning":re.split("[；，]", record.ja_meaning)
+        })
+    return jsonify({"top":top_data})
 
 
 if __name__ == "__main__":

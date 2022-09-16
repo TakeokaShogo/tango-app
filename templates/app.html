@@ -16,9 +16,15 @@
             /* 変数一覧 */
             --header-color: #00a4b3;
             --header-icon-color: #00434a;
+            --pulldown-arrow-color: #007885;
             --base-color: #ebebeb;
             --word-box-back-color: #ffffff;
             --en-word-color: #ff7700;
+            --category-red: red;
+            --category-yellow: yellow;
+            --category-button-border-color: gray;
+            --popup-border: rgb(201, 201, 201);
+            --popup-background: #ffffff;
 
             /* 変数一覧
             --header-color: #00a4b3;
@@ -74,7 +80,7 @@
         }
 
 
-        .pull-down select, .changer-box, .word-box, .check-button, .popup-box {
+        .pull-down select, .changer-box, .word-box, .category-button, .popup-box {
             border-radius: var(--all-radius);
         }
         
@@ -114,7 +120,7 @@
         }
 
         .pull-down .down-arrow {
-            color: #007885;
+            color: var(--pulldown-arrow-color);
             font-size: 1.1rem;
             position: absolute;
             top: 0.6rem;
@@ -164,13 +170,13 @@
         }
 
         .popup-box {
-            border: 1px solid rgb(201, 201, 201);
+            border: 1px solid var(--popup-border);
             position: absolute;
             top: 0;
             right: 5rem;
             top: var(--header-height);
             width: 200px;
-            background-color: white;
+            background-color: var(--popup-background);
             text-align: center;
             margin-top: 3px;
             padding: 1.5rem 0;
@@ -199,7 +205,7 @@
             right: 0;
         }
 
-        .words-list {
+        .word-list {
             margin-top: calc(var(--header-height) + 1rem);
         }
 
@@ -221,16 +227,28 @@
             text-align: center;
         }
 
-        .category-check {
+        .category-box {
             width: 15%;
         }
 
-        .check-button {
+        .category-button {
             --side-length: 1.6rem;
             width: var(--side-length);
             height: var(--side-length);
-            border: 2px solid gray;
+            border: 2px solid var(--category-button-border-color);
             margin: 0 auto;
+        }
+
+        .category-button.none {
+            background-color: transparent;
+        }
+
+        .category-button.red {
+            background-color: var(--category-red);
+        }
+
+        .category-button.yellow {
+            background-color: var(--category-yellow);
         }
 
         .en-word {
@@ -239,7 +257,7 @@
             color: var(--en-word-color);
         }
 
-        .ja-word {
+        .ja-meaning {
             width: 40%;
             /* テキストの両端揃え */
             text-align: justify;
@@ -303,88 +321,59 @@
         </div>
     </header>
 
-    <div class="words-list">
-        <div class="word-box">
-            <div class="category-check">
-                <button class="check-button"></button>
+    <div class="word-list" id="word-list">
+        <!-- <div class="word-box">
+            <div class="category-box">
+                <button class="category-button" id="1"></button>
             </div>
             <div class="en-word">improve</div>
-            <div class="ja-word">を向上させる；よくなる</div>
+            <div class="ja-meaning">を向上させる；よくなる</div>
             <i class="fa-solid fa-volume-high"></i>
-        </div>
-        <div class="word-box">
-            <div class="category-check">
-                <button class="check-button"></button>
-            </div>
-            <div class="en-word">relate</div>
-            <div class="ja-word">を（...と）関連づける；（...に）関連する</div>
-            <i class="fa-solid fa-volume-high"></i>
-        </div>
-        <div class="word-box">
-            <div class="category-check">
-                <button class="check-button"></button>
-            </div>
-            <div class="en-word">provide</div>
-            <div class="ja-word">を供給する（≒supply）</div>
-            <i class="fa-solid fa-volume-high"></i>
-        </div>
-        <div class="word-box">
-            <div class="category-check">
-                <button class="check-button"></button>
-            </div>
-            <div class="en-word">consider</div>
-            <div class="ja-word">を見なす；について考える</div>
-            <i class="fa-solid fa-volume-high"></i>
-        </div>
-        <div class="word-box">
-            <div class="category-check">
-                <button class="check-button"></button>
-            </div>
-            <div class="en-word">include</div>
-            <div class="ja-word">を含む</div>
-            <i class="fa-solid fa-volume-high"></i>
-        </div>
-        <div class="word-box">
-            <div class="category-check">
-                <button class="check-button"></button>
-            </div>
-            <div class="en-word">concern</div>
-            <div class="ja-word">（受身形で）（...を）心配する；（...に）関係する；に関連する</div>
-            <i class="fa-solid fa-volume-high"></i>
-        </div>
-        <div class="word-box">
-            <div class="category-check">
-                <button class="check-button"></button>
-            </div>
-            <div class="en-word">involve</div>
-            <div class="ja-word">を関与させる；を伴う</div>
-            <i class="fa-solid fa-volume-high"></i>
-        </div>
-        <div class="word-box">
-            <div class="category-check">
-                <button class="check-button"></button>
-            </div>
-            <div class="en-word">produce</div>
-            <div class="ja-word">を生産する；を取り出す</div>
-            <i class="fa-solid fa-volume-high"></i>
-        </div>
-        <div class="word-box">
-            <div class="category-check">
-                <button class="check-button"></button>
-            </div>
-            <div class="en-word">allow</div>
-            <div class="ja-word">を許す；を与える；（...を）考慮に入れる</div>
-            <i class="fa-solid fa-volume-high"></i>
-        </div>
-        <div class="word-box">
-            <div class="category-check">
-                <button class="check-button"></button>
-            </div>
-            <div class="en-word">require</div>
-            <div class="ja-word">を要求する；を必要とする</div>
-            <i class="fa-solid fa-volume-high"></i>
-        </div>
+        </div> -->
     </div>
-    
+    <script>
+        // "await" はasync function 内で Promise の結果（ resolve 、 reject ）
+        // が返されるまで待機する（処理を一時停止する）演算子のこと。
+        // そのため、asyncを付けた関数の外に記述するとSyntaxErrorとなる。
+        async function getWordList(){
+            const j = await (await fetch("/word_list")).json();
+            return j;   //jはPromise
+        }
+
+        function createWordBoxHTML(id, category, enWord, jaMeaning){    //jaMeaningは配列
+            let meaningText = "";
+            for (const meaning of jaMeaning) {
+                meaningText.concat(meaning);
+                meaningText.concat("<br>");
+            }
+            meaningText.slice(0, -4);   //末尾の<br>の削除
+
+            //括弧いらない
+            const wordBoxHTML = String.raw`
+                <div class="word-box">
+                    <div class="category-box">
+                        <button class="category-button ${category}" id="${id}"></button>
+                    </div>
+                    <div class="en-word">${enWord}</div>
+                    <div class="ja-meaning">${meaningText}</div>
+                    <i class="fa-solid fa-volume-high"></i>
+                </div>
+            `;
+            return wordBoxHTML;
+        }
+
+        getWordList().then(response => {
+            const wordList = response.top;      //Array
+
+            // forEachはインデックス番号も取得できるが、breakとcontinueが使えない
+            for (const wordObject of wordList) {
+                const wordBoxHTML = createWordBoxHTML(wordObject.id, wordObject.category,
+                wordObject.enWord, wordObject.jaMeaning);   
+                document.getElementById("word-list").insertAdjacentHTML("beforeend", wordBoxHTML);
+            }
+        });
+
+        let pullDown = document.getElementById("section-pulldown");
+    </script>   
 </body>
 </html>
