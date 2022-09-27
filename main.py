@@ -1,10 +1,14 @@
 from flask import *
 from flask_sqlalchemy import SQLAlchemy
+# 必ず消す!!
+from flask_cors import CORS
 import os
 import csv
 import re
               
 app = Flask(__name__)
+# 必ず消す!!
+CORS(app)
 # アップデートの追跡機能の無効化
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -30,7 +34,6 @@ db.create_all()
 # 2.2.xで非推奨。2.3では削除される予定
 @app.before_first_request
 def insert_word_list():
-    
     # データベースが空でなければreturn
     if WordList.query.all():
         return
@@ -52,7 +55,7 @@ def render_app():
 # fetch API
 @app.route("/word_list", methods=["GET"])
 def get_word_list():
-    all_record = WordList.query.all()
+    all_record = WordList.query.order_by(WordList.id).all()
     top_data = []
     for record in all_record:
         top_data.append({
@@ -68,5 +71,5 @@ def get_word_list():
 if __name__ == "__main__":
     # 最後に消す!!!
     app.debug = True
-    app.run(host="localhost") 
+    app.run(host="0.0.0.0", port=5000) 
 

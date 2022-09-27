@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
-    <title>SITE SAMPLE</title>
+    <title>TANGO APP</title>
     <script src="https://kit.fontawesome.com/872c04da44.js" crossorigin="anonymous"></script>
     <style>
         .ja i, .en i, .popup-box {
@@ -20,8 +20,8 @@
             --base-color: #ebebeb;
             --word-box-back-color: #ffffff;
             --en-word-color: #ff7700;
-            --category-red: red;
-            --category-yellow: yellow;
+            --category-red: rgb(231, 112, 112);
+            --category-yellow: rgb(216, 216, 0);
             --category-button-border-color: gray;
             --popup-border: rgb(201, 201, 201);
             --popup-background: #ffffff;
@@ -335,45 +335,141 @@
         // "await" はasync function 内で Promise の結果（ resolve 、 reject ）
         // が返されるまで待機する（処理を一時停止する）演算子のこと。
         // そのため、asyncを付けた関数の外に記述するとSyntaxErrorとなる。
-        async function getWordList(){
-            const j = await (await fetch("/word_list")).json();
-            return j;   //jはPromise
-        }
+        // async function getWordList(){
+        //     const j = await (await fetch("/word_list")).json();
+        //     return j;   //jはPromise
+        // }
 
-        function createWordBoxHTML(id, category, enWord, jaMeaning){    //jaMeaningは配列
+        function getWordBoxHTML(wordObject){    //jaMeaningは配列
+            const id = wordObject.id;
+            const category = wordObject.category;
+            let enWord = wordObject.enWord;
+            const jaMeaning = wordObject.jaMeaning;
+            let enIsDisplayed = wordObject.enIsDisplayed;
+            let jaIsDisplayed = wordObject.jaIsDisplayed;
+
             let meaningText = "";
             for (const meaning of jaMeaning) {
-                meaningText.concat(meaning);
-                meaningText.concat("<br>");
+                meaningText = meaningText + meaning;
+                meaningText = meaningText + "<br>";
             }
             meaningText.slice(0, -4);   //末尾の<br>の削除
+            if (!enIsDisplayed) {
+                enWord = "-----"
+            }
+
+            if (!jaIsDisplayed) {
+                meaningText = "-----"
+            }
+            const categoryId = "category"+id;
+            const enWordId = "enWord"+id;
+            const jaMeaningId= "jaMeaning"+id;
 
             //括弧いらない
             const wordBoxHTML = String.raw`
-                <div class="word-box">
+                <div class="word-box" id="${id}">
                     <div class="category-box">
-                        <button class="category-button ${category}" id="${id}"></button>
+                        <button class="category-button ${category}" id="${categoryId}"></button>
                     </div>
-                    <div class="en-word">${enWord}</div>
-                    <div class="ja-meaning">${meaningText}</div>
+                    <div class="en-word" id="${enWordId}">${enWord}</div>
+                    <div class="ja-meaning" id="${jaMeaningId}">${meaningText}</div>
                     <i class="fa-solid fa-volume-high"></i>
                 </div>
             `;
             return wordBoxHTML;
         }
 
-        getWordList().then(response => {
-            const wordList = response.top;      //Array
-
+        function renderWordBoxList(wordList) {
+            let wordListNode = document.getElementById("word-list");
+            wordListNode.innerHTML = "";
             // forEachはインデックス番号も取得できるが、breakとcontinueが使えない
             for (const wordObject of wordList) {
-                const wordBoxHTML = createWordBoxHTML(wordObject.id, wordObject.category,
-                wordObject.enWord, wordObject.jaMeaning);   
-                document.getElementById("word-list").insertAdjacentHTML("beforeend", wordBoxHTML);
+                const wordBoxHTML = getWordBoxHTML(wordObject);   
+                wordListNode.insertAdjacentHTML("beforeend", wordBoxHTML);
             }
+        }
+
+        function main(wordList) {      //再帰関数
+            let newWordList = wordList;
+            for (let i=0; i < wordList.length; i++) {
+                const originalWordObject = wordList[i];
+
+                //category event
+                let newWordObject = newWordList[i];
+                document.getElementById("category"+originalWordObject.id).addEventListener("click", () => {
+                    let oldCategory = newWordObject.category;
+                    let newCategory = rotateCategory(oldCategory);
+                    newWordObject.category = newCategory;
+                    
+                    //render
+                    document.getElementById("category"+newWordObject.id).classList.replace(oldCategory, newCategory);
+                    //一括更新は重い
+                    //該当のボックスだけDOMを更新する
+                });
+
+                document.getElementById("enWord"+originalWordObject.id).addEventListener("click", () => {
+                    newWordObject.enIsDisplayed = toggleDisplayed(newWordObject.enIsDisplayed);
+
+                    if (newWordObject.enIsDisplayed) {
+                        //やっぱりカオスコードになるので、Reactを使うべき？
+                    }
+                });
+            }
+        }
+
+        function toggleDisplayed(isDisplayed) {
+            if (isDisplayed) {
+                return false;
+            }else {
+                return true;
+            }
+        }
+
+        function addIsDisplayedProperty(wordList) {
+            let newWordList = []; 
+            for (const wordObject of wordList) {
+                wordObject.enIsDisplayed = true;
+                wordObject.jaIsDisplayed = true;
+                newWordList.push(wordObject);
+            }
+            return newWordList;
+        }
+
+        function rotateCategory(category) {
+            let nCategory = category;
+
+            if (nCategory == "none") {
+                nCategory = "red";
+            }else if (nCategory == "red") {
+               nCategory = "yellow"; 
+            }else {     //nCategory == "yellow"
+                nCategory = "none";
+            }
+            
+            return nCategory;
+
+        }
+
+        fetch("/word_list").then(res => {return res.json()}).then(responseJson => {
+            let wordList = addIsDisplayedProperty(responseJson.top);      //Array
+            renderWordBoxList(wordList);
+
+            main(wordList);
         });
 
-        let pullDown = document.getElementById("section-pulldown");
+
+        // Promise内で取得した値をブロックの外に出すのは難しいので、
+        // その値を利用する処理を関数などにうまくまとめて、ブロック内で
+        // 完結するように書く
+
+        //stateの変更と描画の処理は分ける(分けないとセクションごとに表示させる処理が難しい)
+        //非同期のイベントリスナから値をどう受け取るか？(描画の処理を無限ループ?)
+        //React案件？(できれば使わずに作りたい)
+        //イベントリスナーだけならstateのような概念の実装は可能？
+        //pulldownのイベントリスナとcategoryBoxのイベントリスナでオブジェクトや配列を共有する
+        //DOMを描画するごとにイベントリスナーの登録が必要？
+        //描画処理の中でイベントリスナーを登録し、イベントリスナーの中で描画処理を呼び出す
+        //(再帰関数)
     </script>   
 </body>
 </html>
