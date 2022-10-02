@@ -1,14 +1,17 @@
 from flask import *
 from flask_sqlalchemy import SQLAlchemy
+
 # 必ず消す!!
 from flask_cors import CORS
-import os
+
 import csv
 import re
               
 app = Flask(__name__)
+
 # 必ず消す!!
 CORS(app)
+
 # アップデートの追跡機能の無効化
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -47,13 +50,12 @@ def insert_word_list():
             db.session.add(word_list)
             db.session.commit()
 
-
 @app.route('/', methods=["GET"])
 def render_app():
     return render_template("app.html")
 
 # fetch API
-@app.route("/word_list", methods=["GET"])
+@app.route("/word_list/", methods=["GET"])
 def get_word_list():
     all_record = WordList.query.order_by(WordList.id).all()
     top_data = []
@@ -67,9 +69,17 @@ def get_word_list():
         })
     return jsonify({"top":top_data})
 
-
+# 末尾に/を付けると、リダイレクトされてしまいステータスコードが変わるので注意
+@app.route("/word/<id>", methods=["PUT"])
+def change_category(id):
+    word = WordList.query.filter_by(id=id).first()
+    # application/json の場合
+    word.category = request.json["nextCategory"]
+    db.session.add(word)
+    db.session.commit()
+    return "", 200
+    
 if __name__ == "__main__":
     # 最後に消す!!!
     app.debug = True
     app.run(host="0.0.0.0", port=5000) 
-
