@@ -52,7 +52,7 @@ def insert_word_list():
 
 @app.route('/', methods=["GET"])
 def render_app():
-    return render_template("app.html")
+    return render_template("index.html")
 
 # fetch API
 @app.route("/word_list/", methods=["GET"])
