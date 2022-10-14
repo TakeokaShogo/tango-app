@@ -2,24 +2,27 @@ from flask import *
 from flask_sqlalchemy import SQLAlchemy
 
 # 必ず消す!!
-from flask_cors import CORS
+# from flask_cors import CORS
 
 import csv
 import re
+import os
               
 app = Flask(__name__)
 
 # 必ず消す!!
-CORS(app)
+# CORS(app)
 
 # アップデートの追跡機能の無効化
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db_type = "sqlite:///"
-db_file_path = 'test.db' #テーブルを保存するファイル
-db_uri = db_type + db_file_path
-# herokuの環境変数を参照する
-# db_uri = os.environ.get('DATABASE_URL')
+# db_type = "sqlite"
+# db_file_path = 'test.db'
+# db_uri = db_type + ":///" + db_file_path
+
+# fly.ioの環境変数を参照する
+db_uri = os.environ.get('DATABASE_URL')
+
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 db = SQLAlchemy(app)
 
