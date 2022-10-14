@@ -27,6 +27,7 @@ with app.app_context():
 
     app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     db = SQLAlchemy(app)
+    db.create_all()
 
 class WordList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -37,7 +38,6 @@ class WordList(db.Model):
     # "じっと見る"という意味の単語が二つあったため、uniqueはFalse
     ja_meaning = db.Column(db.String(100), index=False, unique=False)
 
-db.create_all()
 
 # 2.2.xで非推奨。2.3では削除される予定
 @app.before_first_request
