@@ -27,17 +27,17 @@ with app.app_context():
 
     app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     db = SQLAlchemy(app)
+
+    class WordList(db.Model):
+        id = db.Column(db.Integer, primary_key=True)
+        # "none", "red", "yellow"
+        category = db.Column(db.String(10), index=False, unique=False)
+        # 検索はしないため、index(索引用のデータ)はFalse
+        en_word = db.Column(db.String(15), index=False, unique=True)
+        # "じっと見る"という意味の単語が二つあったため、uniqueはFalse
+        ja_meaning = db.Column(db.String(100), index=False, unique=False)
+
     db.create_all()
-
-class WordList(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    # "none", "red", "yellow"
-    category = db.Column(db.String(10), index=False, unique=False)
-    # 検索はしないため、index(索引用のデータ)はFalse
-    en_word = db.Column(db.String(15), index=False, unique=True)
-    # "じっと見る"という意味の単語が二つあったため、uniqueはFalse
-    ja_meaning = db.Column(db.String(100), index=False, unique=False)
-
 
 # 2.2.xで非推奨。2.3では削除される予定
 @app.before_first_request
