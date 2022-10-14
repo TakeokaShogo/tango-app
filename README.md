@@ -1,6 +1,6 @@
 
 # 自分用単語アプリ(React & flask)
-Reactとflaskで自分用の単語アプリをSPAとして実装
+Reactとflaskで自分用の単語アプリをSPAとして実装  
 レスポンシブデザインにも対応
 
 ![PC screenshot image](pc-scs.png)
