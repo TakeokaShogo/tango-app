@@ -60,7 +60,7 @@ def render_app():
     return render_template("index.html")
 
 # fetch API
-@app.route("/word_list", methods=["GET"])
+@app.route("/word_list/", methods=["GET"])
 def get_word_list():
     all_record = WordList.query.order_by(WordList.id).all()
     top_data = []
