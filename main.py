@@ -86,5 +86,5 @@ def change_category(id):
     
 if __name__ == "__main__":
     # 最後に消す!!!
-    app.debug = True
+    # app.debug = True
     app.run(host="0.0.0.0") 
