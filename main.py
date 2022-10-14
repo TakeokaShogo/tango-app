@@ -13,18 +13,20 @@ app = Flask(__name__)
 # 必ず消す!!
 # CORS(app)
 
-# アップデートの追跡機能の無効化
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# RuntimeError: Working outside of application context. 対策
+with app.app_context():
+    # アップデートの追跡機能の無効化
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# db_type = "sqlite"
-# db_file_path = 'test.db'
-# db_uri = db_type + ":///" + db_file_path
+    # db_type = "sqlite"
+    # db_file_path = 'test.db'
+    # db_uri = db_type + ":///" + db_file_path
 
-# fly.ioの環境変数を参照する
-db_uri = os.environ.get('DATABASE_URL')
+    # fly.ioの環境変数を参照する
+    db_uri = os.environ.get('DATABASE_URL')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
-db = SQLAlchemy(app)
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+    db = SQLAlchemy(app)
 
 class WordList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
